@@ -34,12 +34,13 @@ public class Factory_UFO {
                     newUFO = new UFO_Blue();
                     break;
             }
+            newUFO.hide();
             UFO_store.Add(newUFO.gameobject.GetInstanceID(), newUFO);
             return newUFO;
         } else {
             int id = idList[Random.Range(0, idList.Count)];
             UFO product = UFO_available[id];
-            product.gameobject.SetActive(true);
+            product.hide();
             UFO_available.Remove(id);
             idList.Remove(id);
             return product;
@@ -54,6 +55,6 @@ public class Factory_UFO {
         int id = ufo.gameobject.GetInstanceID();
         UFO_available.Add(id, ufo);
         idList.Add(id);
-        ufo.gameobject.SetActive(false);
+        ufo.hide();
     }
 }

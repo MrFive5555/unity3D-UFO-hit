@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 class CountBack : Action {
-    private float time = 4;
+    private float time = 0;
     private string str = "";
     static public Action getAction() {
         Action ac = ScriptableObject.CreateInstance<CountBack>();
@@ -68,6 +68,7 @@ class ThrowUFO : Action {
             Random.Range(-0.3f, 0.3f),
             1
         ) * speed;
+        ufo.show();
     }
     override
     public void Update () {
@@ -76,6 +77,8 @@ class ThrowUFO : Action {
             destroy = true;
             callback.call();
             factory.Recovery(ufo);
+        } else if(!ufo.canHit) {
+            ufo.gameobject.transform.Rotate(Vector3.forward, 90);
         }
     }
 }

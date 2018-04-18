@@ -50,7 +50,7 @@ public class Game : ActionManager, Callback {
                     }
                     hitObj.GetComponent<Rigidbody>().AddForce(new Vector3(
                             Random.Range(-1, 1),
-                            -1f,
+                            1f,
                             Random.value
                         ) * 3000
                     );
