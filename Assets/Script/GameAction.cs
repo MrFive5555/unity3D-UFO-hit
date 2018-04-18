@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 class CountBack : Action {
-    private float time = 0;
+    private float time = 4;
     private string str = "";
     static public Action getAction() {
         Action ac = ScriptableObject.CreateInstance<CountBack>();
