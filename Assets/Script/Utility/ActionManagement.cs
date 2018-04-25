@@ -19,6 +19,9 @@ public class Action : ScriptableObject {
     public virtual void OnGUI() {
             
     }
+    public virtual void FixedUpdate() {
+
+    }
 }
 
 public class SequenceAction : Action, Callback {
@@ -38,7 +41,9 @@ public class SequenceAction : Action, Callback {
         if (sequence.Count != 0) {
             sequence[0].Start();
         } else {
-            callback.call();
+            if (callback != null) {
+                callback.call();
+            }
             destroy = true;
         }
     }
@@ -47,7 +52,9 @@ public class SequenceAction : Action, Callback {
             sequence[i].Update();
         } else {
             destroy = true;
-            callback.call();
+            if(callback != null) {
+                callback.call();
+            }
         }
     }
     public override void OnGUI() {
@@ -84,6 +91,27 @@ public class ActionManager : MonoBehaviour {
                 waitingDelete.Add(kv.Key);
             } else if (ac.enable) {
                 ac.Update();
+            }
+        }
+        foreach (int key in waitingDelete) {
+            Action ac = actions[key];
+            actions.Remove(key);
+            DestroyObject(ac);
+        }
+        waitingDelete.Clear();
+    }
+
+    public void FixedUpdate() {
+        foreach (Action ac in waitingAdd) {
+            actions[ac.GetInstanceID()] = ac;
+        }
+        waitingAdd.Clear();
+        foreach (KeyValuePair<int, Action> kv in actions) {
+            Action ac = kv.Value;
+            if (ac.destroy) {
+                waitingDelete.Add(kv.Key);
+            } else if (ac.enable) {
+                ac.FixedUpdate();
             }
         }
         foreach (int key in waitingDelete) {

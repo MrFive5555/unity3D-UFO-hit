@@ -36,26 +36,34 @@ public class Game : ActionManager, Callback {
             RunAction(ac);
             isReady = false;
         }
+        /*
         if (Input.GetMouseButton(0)) {
+            
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Debug.Log(Input.mousePosition);
             RaycastHit hitInfo;
 
             if (Physics.Raycast(ray, out hitInfo)) {
                 GameObject hitObj = hitInfo.collider.gameObject;
                 if (hitObj.CompareTag("UFO")) {
-                    UFO ufo = Factory_UFO.getInstance().getUFOInstance(hitObj.GetInstanceID());
+                    UFO ufo = Factory_UFO.getInstance().getProduct(hitObj.GetInstanceID());
                     if (ufo.canHit) {
                         ufo.canHit = false;
                         scorer.addScore(ufo.Score);
                     }
-                    hitObj.GetComponent<Rigidbody>().AddForce(new Vector3(
-                            Random.Range(-1, 1),
-                            1f,
-                            Random.value
-                        ) * 3000
-                    );
                 }
             }
+        }*/
+        
+        if (Input.GetMouseButtonDown(0)) {
+            const int ARROW_WIDTH = 300; // 箭射出的初始范围
+            const int ARROW_HEIGHT = 70;
+            Vector3 pos = new Vector3(
+                Input.mousePosition.x / Screen.width * ARROW_WIDTH - ARROW_WIDTH / 2,
+                Input.mousePosition.y / Screen.height * ARROW_HEIGHT,
+                0
+            );
+            RunAction(ShootArrow.getAction(pos, 500f));
         }
         base.Update();
     }

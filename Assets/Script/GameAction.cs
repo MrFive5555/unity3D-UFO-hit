@@ -43,7 +43,7 @@ class ThrowUFO : Action {
     public static Action getAction(int score, float _speed) {
         ThrowUFO action = ScriptableObject.CreateInstance<ThrowUFO>();
         action.factory = Factory_UFO.getInstance();
-        action.ufo = action.factory.getUFOInstance();
+        action.ufo = action.factory.getProduct();
         action.speed = _speed;
         action.ufo.Score = score;
         action.ufo.canHit = true;
@@ -76,9 +76,10 @@ class ThrowUFO : Action {
             || gameobject.transform.position.y < 0) {
             destroy = true;
             callback.call();
-            factory.Recovery(ufo);
-        } else if(!ufo.canHit) {
-            ufo.gameobject.transform.Rotate(Vector3.forward, 90);
+            factory.recycle(ufo);
+        }
+        if(!ufo.canHit) {
+            ufo.gameobject.transform.Rotate(Vector3.forward * 1080 * Time.deltaTime);
         }
     }
 }
@@ -150,5 +151,36 @@ class OverAction : Action {
     }
     override public void OnGUI() {
         GUI.Label(View.LabelPos, score, View.LabelStyle());
+    }
+}
+
+class ShootArrow : Action {
+    private static int maxDistance = 500;
+    private Factory_Arrow factory;
+    public Arrow arrow;
+
+    public static Action getAction(Vector3 pos, float speed) {
+        ShootArrow action = ScriptableObject.CreateInstance<ShootArrow>();
+        action.factory = Factory_Arrow.getInstance();
+        action.arrow = action.factory.getProduct();
+        action.gameobject = action.arrow.gameobject;
+        action.gameobject.transform.position = pos;
+        action.gameobject.GetComponent<Rigidbody>().velocity = (new Vector3(0, 0, 200) - pos).normalized * speed;
+        return action;
+    }
+    override
+    public void Start() {
+        arrow.gameobject.SetActive(true);
+    }
+    override
+    public void Update() {
+        if (gameobject.transform.position.z > maxDistance
+            || gameobject.transform.position.y < 0) {
+            destroy = true;
+            if(callback != null) {
+                callback.call();
+            }
+            factory.recycle(arrow);
+        }
     }
 }
